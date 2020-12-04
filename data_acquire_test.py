@@ -22,6 +22,14 @@ p = '5d'
 i = '1m'
 
 
+# database info
+MAX_DOWNLOAD_ATTEMPT = 5
+DOWNLOAD_PERIOD = 10         # second
+logger = logging.Logger(__name__)
+utils.setup_logger(logger, 'data.log')
+client = pymongo.MongoClient()
+
+
 # Download data for one stock
 def download_one(t, p, i):
     data = yf.download(
@@ -74,3 +82,4 @@ def main_loop(timeout=DOWNLOAD_PERIOD):
 # Call main loop
 if __name__ == '__main__':
     main_loop()
+
