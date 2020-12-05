@@ -25,7 +25,7 @@ import expiringdict
 
 import utils
 
-client = pymongo.MongoClient()
+client = pymongo.MongoClient(host=['127.0.0.1:27017'])
 logger = logging.Logger(__name__)
 RESULT_CACHE_EXPIRATION = 10        
 
@@ -37,7 +37,7 @@ def upsert_stock(df):
     db = client.get_database("stock")
     collection = db.get_collection("stock")
     update_count = 0
-    for record in data.to_dict('records'):
+    for record in df.to_dict('records'):
         result = collection.replace_one(
             filter={'Datetime': record['Datetime']},    
             replacement=record,                         
