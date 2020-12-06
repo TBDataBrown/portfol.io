@@ -3,8 +3,11 @@ import dash_core_components as dcc
 import dash_html_components as html  
 import plotly.express as px 
 import pandas as pd  
+import numpy as np
 from dash.dependencies import Input, Output
 import plotly.graph_objects as go 
+import chart_studio.plotly as py
+import plotly.figure_factory as ff
 
 # borrowing function from database
 from database import fetch_all_stock_as_df
@@ -76,7 +79,7 @@ def static_stacked_trend_graph(stack=False):
     x = df['Datetime']
     fig = go.Figure()
     for i,s in enumerate(tickers):
-        fig.add_trace(go.Scatter(x=x, y=(df[s].pct_change()+1).cumprod(),mode='lines', name=s, 
+        fig.add_trace(go.Scatter(x=x, y=df[s],mode='lines', name=s, 
         line={'width':2, 'color': COLORS[i]}, 
         stackgroup='stack' if stack else None))
     title = 'Selected Stock Prices over 7 Days'
@@ -120,6 +123,31 @@ def refs():
         
         ''', className='eleven columns', style={'paddingLeft': '5%'})], className="row")
 
+# Interactive portfolio tool 
+def portfolio_visualizer_tool():
+    """
+    Returns the interactive portfolio manager as a dash `html.Div`. The view
+    is a 12-column graph showing the performance of our portfolio relative to the 
+    S&P 500, DJI, and NASDAQ Composite. Below are dropdown menus to choose stock and input boxes
+    to choose number of shares. `Add new stock` button available to add another stock.
+    """
+    return html.Div(children=[
+        html.Div(children=[dcc.Graph(id='interactive-portfolio')], className='twelve columns'),
+        html.Div(children=[
+            html.H4("Select Stocks & Quantities", style={'marginTop':'2rem', 'display':'inline-block'}),
+            html.Button(children='Add new stock', id='add stock', type='button', n_clicks=0),
+            html.Div(children=[
+                dcc.Dropdown(
+                    id='stock-selector', 
+                    options = [
+                        {'label': 'Apple (AAPL)', 'value':'AAPL'},
+                        {'label': 'Starbucks (SBUX)', 'value':'SBUX'}
+                    ],
+                    placeholder='Choose a stock')
+            ], style={'marginTop':'1rem', 'width':'40%'})
+        ])
+    ], className='row eleven columns')
+
 # Sequentially add page components to the app's layout
 def dynamic_layout():
     return html.Div([
@@ -128,6 +156,7 @@ def dynamic_layout():
         summary(),
         team(),
         dcc.Graph(id='trend-graph', figure=static_stacked_trend_graph(stack=False)),
+        portfolio_visualizer_tool(),
         nextsteps(),
         refs(),
     ], className='row', id='content')
