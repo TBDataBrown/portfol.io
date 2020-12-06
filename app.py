@@ -21,6 +21,11 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets,title='Portf
 
 ### Define component functions
 
+def random_color():
+    color = tuple(np.random.choice(range(256), size=3))
+    color = 'rgb'+str(color)
+    return color
+
 def page_header():
     """
     Returns the page header as a dash `html.Div`
@@ -75,22 +80,23 @@ def static_stacked_trend_graph(stack=False):
     df = fetch_all_stock_as_df()
     if df is None: 
         return go.Figure()
-    tickers = ['SBUX', 'AAPL']
+    tickers = ['TSLA', 'ENPH', 'ZM', 'MRNA', 'PTON', 'BTBT', 'TGT', 'WMT', 'SBUX', 'ABBV']
     x = df['Datetime']
     fig = go.Figure()
     for i,s in enumerate(tickers):
         fig.add_trace(go.Scatter(x=x, y=df[s],mode='lines', name=s, 
-        line={'width':2, 'color': COLORS[i]}, 
+        line={'width':2, 'color': random_color()}, 
         stackgroup='stack' if stack else None))
     title = 'Selected Stock Prices over 7 Days'
     if stack:
         title += ' [Stacked]'
-    
+        
     fig.update_layout(template='ggplot2',
                     title=title,
                     yaxis_title='Stock Price per Share',
                     xaxis_title='Date/Time')
     return fig
+
 
 def interactive_portfolio_description():
     """
