@@ -42,7 +42,7 @@ def summary():
     Returns executive summary in markdown
     """
     return html.Div(children=[dcc.Markdown('''
-        # Overview
+        # About Portfol.io
         Portfol.io is an interactive portfolio manager that aims to simplify and streamline
         the way individual investors calculate and visualize their returns.
         Numerous financial websites and APIs out there track stock prices and indices, but they are often 
@@ -134,19 +134,35 @@ def portfolio_visualizer_tool():
     return html.Div(children=[
         html.Div(children=[dcc.Graph(id='interactive-portfolio')], className='twelve columns'),
         html.Div(children=[
-            html.H4("Select Stocks & Quantities", style={'marginTop':'2rem', 'display':'inline-block'}),
-            html.Button(children='Add new stock', id='add stock', type='button', n_clicks=0),
-            html.Div(children=[
-                dcc.Dropdown(
-                    id='stock-selector', 
-                    options = [
-                        {'label': 'Apple (AAPL)', 'value':'AAPL'},
-                        {'label': 'Starbucks (SBUX)', 'value':'SBUX'}
-                    ],
-                    placeholder='Choose a stock')
-            ], style={'marginTop':'1rem', 'width':'40%'})
-        ])
-    ], className='row eleven columns')
+            html.H4(
+                "Select Stocks & Number of Shares")],
+                style={'marginTop':'2rem', 
+                'display':'table-cell'}),
+        html.Div(children=[
+            html.Button(
+                children='Add new stock',
+                id='add stock',
+                type='button',
+                n_clicks=0
+            )
+        ], style = {'width':'25%', 'display':'table-cell'}), 
+        html.Div(children=[
+            dcc.Dropdown(
+                id='stock-selector',
+                options=[
+                    {'label': 'Apple (AAPL)', 'value':'AAPL'},
+                    {'label': 'Starbucks (SBUX)', 'value':'SBUX'}
+                ],
+                placeholder='Choose a stock')], style={'width':'30%', 'display':'inline-grid'}),
+        html.Div(children=[
+            dcc.Input(
+                id='quantity',
+                type='number',
+                min=1, max=1000, step=1,
+                placeholder='Shares'
+            )
+        ], style={'width':'15%', 'display':'inline-grid'})
+        ], className='row eleven columns')
 
 # Sequentially add page components to the app's layout
 def dynamic_layout():
