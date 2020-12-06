@@ -5,6 +5,7 @@ import requests
 from io import StringIO
 
 import utils
+# from database import upsert_bpa
 
 import logging
 import pymongo
@@ -14,10 +15,9 @@ import pandas as pd
 import yfinance as yf
 import numpy as np
 
-from database import upsert_stock
 
 # parameter for testing
-portfolio = ['SPY', 'SBUX', 'AAPL']
+portfolio = ['TSLA', 'ENPH', 'ZM', 'MRNA', 'PTON', 'BTBT', 'TGT', 'WMT', 'SBUX', 'ABBV']
 p = '5d'
 i = '1m'
 
@@ -27,11 +27,7 @@ MAX_DOWNLOAD_ATTEMPT = 5
 DOWNLOAD_PERIOD = 10         # second
 logger = logging.Logger(__name__)
 utils.setup_logger(logger, 'data.log')
-
-# Kevin: added the `host` argument bc that's the only way 
-# I can get MongoDB to work. Feel free to remove it on your local machine
-# if it messes things up for you. 
-client = pymongo.MongoClient(host=['127.0.0.1:27017'])
+client = pymongo.MongoClient()
 
 
 # Download data for one stock
