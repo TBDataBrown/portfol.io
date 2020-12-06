@@ -5,7 +5,7 @@ import requests
 from io import StringIO
 
 import utils
-# from database import upsert_bpa
+from database import upsert_bpa
 
 import logging
 import pymongo
@@ -17,7 +17,7 @@ import numpy as np
 
 
 # parameter for testing
-portfolio = ['TSLA', 'ENPH', 'ZM', 'MRNA', 'PTON', 'BTBT', 'TGT', 'WMT', 'SBUX', 'ABBV']
+portfolio = ['TSLA', 'ENPH', 'ZM', 'MRNA', 'PTON', 'BTBT', 'TGT', 'WMT', 'SBUX', 'ABBV', 'NDAQ', 'SPY', '^DJI']
 p = '5d'
 i = '1m'
 
