@@ -92,6 +92,22 @@ def static_stacked_trend_graph(stack=False):
                     xaxis_title='Date/Time')
     return fig
 
+def interactive_portfolio_description():
+    """
+    Returns description of interactive porfolio component.
+    """
+    return html.Div(children=[
+        dcc.Markdown('''
+        # Interactive Portfolio
+        We curated a list of 10 top stocks from Investopedia advisors, considering factors including
+        value, growth, and dividends in the month of December 2020. These stocks come from technology,
+        energy, consumer products, and healthcare sectors. With Portfol.io, you can choose from the 10 stocks
+        and specify the number of shares of each stock. Our visualizer will show your portfolio's performance over the 
+        last 7 days and compare it with the performance of major indexes, including the Dow Jones Industrial, Nasdaq Composite,
+        and S&P 500.
+        ''', className='eleven columns', style={'paddingLeft':'5%'})
+    ], className='row')
+
 def nextsteps():
     """
     Next steps
@@ -172,6 +188,7 @@ def dynamic_layout():
         summary(),
         team(),
         dcc.Graph(id='trend-graph', figure=static_stacked_trend_graph(stack=False)),
+        interactive_portfolio_description(),
         portfolio_visualizer_tool(),
         nextsteps(),
         refs(),
