@@ -53,7 +53,7 @@ def fetch_all_stock():
     db = client.get_database("stock")
     
     # drop for now
-    db.stock3.drop()
+    #db.stock3.drop()
     
     collection = db.get_collection("stock3")
     ret = list(collection.find())
