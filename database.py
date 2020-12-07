@@ -25,7 +25,8 @@ import expiringdict
 
 import utils
 
-client = pymongo.MongoClient(host=['127.0.0.1:27017'])
+# client = pymongo.MongoClient(host=['127.0.0.1:27017'])
+client = pymongo.MongoClient("mongodb+srv://TBData:TBDataRule@stock.utfyl.mongodb.net/stock?retryWrites=true&w=majority")
 logger = logging.Logger(__name__)
 RESULT_CACHE_EXPIRATION = 10        
 
