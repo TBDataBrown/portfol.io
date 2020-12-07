@@ -25,10 +25,6 @@ def random_color():
     color = 'rgb'+str(color)
     return color
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 99d6ce242d1e62bfc1d218a72a988ff51ae78bc1
 def page_header():
     """
     Returns the page header as a dash `html.Div`
@@ -82,7 +78,8 @@ def static_stacked_trend_graph(stack=False):
     df = fetch_all_stock_as_df()
     if df is None: 
         return go.Figure()
-    tickers = ['TSLA', 'ENPH', 'ZM', 'MRNA', 'PTON', 'BTBT', 'TGT', 'WMT', 'SBUX', 'ABBV']
+    tickers = ['TSLA', 'AMD', 'ZM', 'MRNA', 'PTON', 'AAPL', 'TGT', 'WMT', 
+    'SBUX', 'ABBV', 'NIO', 'SPY']
     x = df['Datetime']
 
     fig = go.Figure()
@@ -93,16 +90,12 @@ def static_stacked_trend_graph(stack=False):
     title = 'Selected Stock Prices over 7 Days'
     if stack:
         title += ' [Stacked]'
-<<<<<<< HEAD
 
     fig.update_xaxes(
     rangebreaks=[
         dict(bounds=[21, 14.5], pattern="hour"),
     ])
 
-=======
-        
->>>>>>> 99d6ce242d1e62bfc1d218a72a988ff51ae78bc1
     fig.update_layout(template='ggplot2',
                     title=title,
                     yaxis_title='Stock Price per Share',
@@ -178,18 +171,20 @@ def interactive_portfolio_tool():
                     dcc.Input(
                         id='tsla',
                         type='number',
-                        min=1, max=1000, step=1,
+                        min=0, max=9999999, step=1,
+                        value=0,
                         placeholder='Shares',
                         style={'display':'table-cell'}
                     )
                 ], style={'width':'100%', 'marginTop':'1rem', 'display':'inline-table', 'verticalAlign':'middle'}),
-                # subdiv 2: Enphase Energy + input box
+                # subdiv 2: AMD + input box
                 html.Div(children=[
-                    html.H6("Enphase (ENPH)", style={'fontSize':14, 'marginTop':'0.5rem', 'display':'table-cell'}),
+                    html.H6("AMD (AMD)", style={'fontSize':14, 'marginTop':'0.5rem', 'display':'table-cell'}),
                     dcc.Input(
-                        id='enph',
+                        id='amd',
                         type='number', 
-                        min=1, max=1000, step=1,
+                        min=0, max=9999999, step=1,
+                        value=0,
                         placeholder='Shares',
                         style={'display':'table-cell'}
                     )
@@ -200,7 +195,8 @@ def interactive_portfolio_tool():
                     dcc.Input(
                         id='zm',
                         type='number',
-                        min=1, max=1000, step=1,
+                        min=0, max=9999999, step=1,
+                        value=0,
                         placeholder='Shares',
                         style={'display':'table-cell'}
                     )
@@ -211,7 +207,8 @@ def interactive_portfolio_tool():
                     dcc.Input(
                         id='mrna',
                         type='number',
-                        min=1, max=1000, step=1,
+                        min=0, max=9999999, step=1,
+                        value=0,
                         placeholder='Shares',
                         style={'display':'table-cell'}
                     )
@@ -222,18 +219,20 @@ def interactive_portfolio_tool():
                     dcc.Input(
                         id='pton', 
                         type='number', 
-                        min=1, max=1000, step=1,
+                        min=0, max=9999999, step=1,
+                        value=0,
                         placeholder='Shares',
                         style={'display':'table-cell'}
                     )
                 ], style={'width':'100%','display':'inline-table', 'verticalAlign':'middle', 'marginTop':'0.5rem'}),
-                # subdiv 6: Bit Digital + input box
+                # subdiv 6: Apple + input box
                 html.Div(children=[
-                    html.H6("Bit Digital (BTBT)", style={'fontSize':14, 'marginTop':'0.5rem', 'display':'table-cell'}),
+                    html.H6("Apple (AAPL)", style={'fontSize':14, 'marginTop':'0.5rem', 'display':'table-cell'}),
                     dcc.Input(
-                        id='btbt',
+                        id='aapl',
                         type='number', 
-                        min=1, max=1000, step=1,
+                        min=0, max=9999999, step=1,
+                        value=0,
                         placeholder='Shares',
                         style={'display':'table-cell'}
                     )
@@ -244,7 +243,8 @@ def interactive_portfolio_tool():
                     dcc.Input(
                         id='tgt', 
                         type='number',
-                        min=1, max=1000, step=1,
+                        min=0, max=9999999, step=1,
+                        value=0,
                         placeholder='Shares',
                         style={'display':'table-cell'}
                     )
@@ -255,7 +255,8 @@ def interactive_portfolio_tool():
                     dcc.Input(
                         id ='wmt', 
                         type='number', 
-                        min=1, max=1000, step=1,
+                        min=0, max=9999999, step=1,
+                        value=0,
                         placeholder='Shares',
                         style={'display':'table-cell'}
                     )
@@ -266,7 +267,8 @@ def interactive_portfolio_tool():
                     dcc.Input(
                         id='sbux',
                         type='number', 
-                        min=1, max=1000, step=1,
+                        min=0, max=9999999, step=1,
+                        value=0,
                         placeholder='Shares',
                         style={'display':'table-cell'}
                     )
@@ -277,7 +279,20 @@ def interactive_portfolio_tool():
                     dcc.Input(
                         id='abbv',
                         type='number', 
-                        min=1, max=1000, step=1,
+                        min=0, max=9999999, step=1,
+                        value=0,
+                        placeholder='Shares',
+                        style={'display':'table-cell'}
+                    )
+                ], style={'width':'100%','display':'inline-table', 'verticalAlign':'middle', 'marginTop':'0.5rem'}),
+                # subdiv 11: Nio + input box
+                html.Div(children=[
+                    html.H6("Nio (NIO)", style={'fontSize':14, 'marginTop':'0.5rem', 'display':'table-cell'}),
+                    dcc.Input(
+                        id='nio', 
+                        type='number', 
+                        min=0, max=9999999, step=1,
+                        value=0, 
                         placeholder='Shares',
                         style={'display':'table-cell'}
                     )
@@ -306,22 +321,61 @@ app.layout = dynamic_layout()
 # Defines dependencies of interactive components
 
 @app.callback(
-    Output(component_id='interactive-portfolio', component_property='figure'),
-    [Input('tsla', 'value'),
-    Input('enph', 'value'),
-    Input('zm', 'value'), 
-    Input('mrna', 'value'), 
-    Input('pton', 'value'),
-    Input('btbt', 'value'), 
-    Input('tgt', 'value'), 
-    Input('wmt', 'value'), 
-    Input('sbux', 'value'),
-    Input('abbv', 'value')]
+    dash.dependencies.Output('interactive-portfolio', 'figure'),
+    [dash.dependencies.Input('tsla', 'value'),
+    dash.dependencies.Input('amd', 'value'),
+    dash.dependencies.Input('zm', 'value'), 
+    dash.dependencies.Input('mrna', 'value'), 
+    dash.dependencies.Input('pton', 'value'),
+    dash.dependencies.Input('aapl', 'value'), 
+    dash.dependencies.Input('tgt', 'value'), 
+    dash.dependencies.Input('wmt', 'value'), 
+    dash.dependencies.Input('sbux', 'value'),
+    dash.dependencies.Input('abbv', 'value'),
+    dash.dependencies.Input('nio', 'value')]
 )
-def interactive_portfolio_handler(tsla, enph, zm, mrna, pton, btbt, tgt, wmt, sbux, abbv):
+def interactive_portfolio_handler(tsla, amd, zm, mrna, pton, aapl, tgt, wmt, sbux, abbv, nio):
     """Changes the display graph of our interactive portfolio"""
-    
+    df = fetch_all_stock_as_df()
+    x = df['Datetime']
+
+    SPY = df['SPY']
+    base_spy = df['SPY'][0]
+    SPY = (SPY/base_spy-1)*100
+
+    DJI = df['^DJI']
+    base_dji = df['^DJI'][0]
+    DJI = (DJI/base_dji-1)*100
+
     fig = go.Figure()
+    title = "Portfolio Performance vs. S&P500 & Dow Jones Industrial"
+    # SPY line
+    fig.add_trace(go.Scatter(x=x, y=SPY, mode='lines', name='S&P 500', 
+    line=dict(color='red', width=3)))
+    # DJI line
+    fig.add_trace(go.Scatter(x=x, y=DJI, mode='lines', name='Dow Jones Industrial',
+    line=dict(color='blue', width=3)))
+
+    ptf = df['TSLA']*tsla + df['AMD']*amd + df['ZM']*zm + df['MRNA']*mrna + df['PTON']*pton + \
+        df['AAPL']*aapl + df['TGT']*tgt + df['WMT']*wmt + df['SBUX']*sbux + df['ABBV']*abbv + \
+        df['NIO']*nio
+    base_ptf = df['TSLA'][0]*tsla + df['AMD'][0]*amd + df['ZM'][0]*zm + df['MRNA'][0]*mrna + df['PTON'][0]*pton + \
+        df['AAPL'][0]*aapl + df['TGT'][0]*tgt + df['WMT'][0]*wmt + df['SBUX'][0]*sbux + df['ABBV'][0]*abbv + \
+        df['NIO'][0]*nio
+    ptf = (ptf/base_ptf-1)*100
+
+    # Portfolio line
+    fig.add_trace(go.Scatter(x=x, y=ptf, mode='lines', name='Portfolio',
+    line=dict(color='green', width=3)))
+
+    fig.update_layout(template='ggplot2', title=title, yaxis_title='Net Gain (USD)',
+    xaxis_title='Date/Time for Trading Hours')
+
+    fig.update_xaxes(
+    rangebreaks=[
+        dict(bounds=[21, 14.5], pattern="hour"),
+    ])
+
     return fig
 
 # Run the application
