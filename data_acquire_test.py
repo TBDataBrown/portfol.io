@@ -5,7 +5,7 @@ import requests
 from io import StringIO
 
 import utils
-from database import upsert_bpa
+from database import upsert_stock
 
 import logging
 import pymongo
