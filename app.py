@@ -25,7 +25,10 @@ def random_color():
     color = 'rgb'+str(color)
     return color
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 99d6ce242d1e62bfc1d218a72a988ff51ae78bc1
 def page_header():
     """
     Returns the page header as a dash `html.Div`
@@ -90,12 +93,16 @@ def static_stacked_trend_graph(stack=False):
     title = 'Selected Stock Prices over 7 Days'
     if stack:
         title += ' [Stacked]'
+<<<<<<< HEAD
 
     fig.update_xaxes(
     rangebreaks=[
         dict(bounds=[21, 14.5], pattern="hour"),
     ])
 
+=======
+        
+>>>>>>> 99d6ce242d1e62bfc1d218a72a988ff51ae78bc1
     fig.update_layout(template='ggplot2',
                     title=title,
                     yaxis_title='Stock Price per Share',
