@@ -13,13 +13,18 @@ import plotly.figure_factory as ff
 from database import fetch_all_stock_as_df
 
 # Definition of constants. This project uses extra CSS stylesheet at `./assets/style.css.html`
-COLORS = ['rgb(51,153,102)', 'rgb(0,102,204)', 'rgb(255,0,0)', 'rgb(255,102,0)']
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css', '/assets/style.css']
 
 # Define dash app
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets,title='Portfol.io')
 
 ### Define component functions
+
+def random_color():
+    color = tuple(np.random.choice(range(256), size=3))
+    color = 'rgb'+str(color)
+    return color
+
 
 def page_header():
     """
@@ -31,7 +36,7 @@ def page_header():
         html.A([html.Img(id='logo', src=app.get_asset_url('github.png'),
                          style={'height': '35px', 'paddingTop': '7%'}),
                 html.Span('TBData', style={'fontSize': '2rem', 'height': '35px', 'bottom': 0,
-                                                'paddingLeft': '4px', 'color': '#f6c154',
+                                                'paddingLeft': '4px', 'color': '#a0d4b6',
                                                 'textDecoration': 'none'})],
                className="two columns row",
                href='https://github.com/TBDataBrown'),
@@ -66,31 +71,39 @@ def team():
         - Shuya Zhang
         - Adrian Lam
         
-        ''', className='eleven columns', style={'paddingLeft': '5%'})], className="row")
+        ''', className='eleven columns', style={'paddingLeft': '5%', 'marginTop':'1.5rem'})], className="row")
 
-# Visualization 
-# Kevin: we want to extract just the close price for each day
-# our short interval is producing the noisy look of our graphs
+
 def static_stacked_trend_graph(stack=False):
+    """Returns static visualization of stock prices over last 7 days"""
     df = fetch_all_stock_as_df()
     if df is None: 
         return go.Figure()
-    tickers = ['SBUX', 'AAPL']
+    tickers = ['TSLA', 'ENPH', 'ZM', 'MRNA', 'PTON', 'BTBT', 'TGT', 'WMT', 'SBUX', 'ABBV']
     x = df['Datetime']
+
     fig = go.Figure()
     for i,s in enumerate(tickers):
         fig.add_trace(go.Scatter(x=x, y=df[s],mode='lines', name=s, 
-        line={'width':2, 'color': COLORS[i]}, 
+        line={'width':2, 'color': random_color()}, 
         stackgroup='stack' if stack else None))
     title = 'Selected Stock Prices over 7 Days'
     if stack:
         title += ' [Stacked]'
-    
+
+    fig.update_xaxes(
+    rangebreaks=[
+        dict(bounds=[21, 14.5], pattern="hour"),
+    ])
+
     fig.update_layout(template='ggplot2',
                     title=title,
                     yaxis_title='Stock Price per Share',
-                    xaxis_title='Date/Time')
+                    xaxis_title='Date/Time for Trading Hours'
+    )
+
     return fig
+
 
 def interactive_portfolio_description():
     """
@@ -105,7 +118,7 @@ def interactive_portfolio_description():
         and specify the number of shares of each stock. Our visualizer will show your portfolio's performance over the 
         last 7 days and compare it with the performance of major indexes, including the Dow Jones Industrial, Nasdaq Composite,
         and S&P 500.
-        ''', className='eleven columns', style={'paddingLeft':'5%'})
+        ''', className='eleven columns', style={'paddingLeft':'5%', 'marginTop':'1.5rem'})
     ], className='row')
 
 def nextsteps():
@@ -121,64 +134,150 @@ def nextsteps():
         decisions. 
         ''', className='eleven columns', style={'paddingLeft': '5%'})], className="row")
 
-
 def refs():
     """
     References of related work
-    Adrian: We should probably make the reference name a hyperlink instead of listing the url; I will do this tomorrow
     """
     return html.Div(children=[dcc.Markdown('''
         # Related Work
-        Prabhakaran, S. (2020, September 17). ARIMA Model - Complete Guide to Time Series Forecasting in Python. 
-        Retrieved November 15, 2020, from https://www.machinelearningplus.com/time-series/arima-model-time-series-forecasting-python/
-        Loukas, S. (2020, July 31). LSTM Time-Series Forecasting: Predicting Stock Prices Using An LSTM Model. 
-        Retrieved November 15, 2020, from https://towardsdatascience.com/lstm-time-series-forecasting-predicting-stock-prices-using-an-lstm-model-6223e9644a2f
-        Nayak, A. (2020, June 10). Predicting Stock Price with LSTM. Retrieved November 15, 2020, 
-        from https://towardsdatascience.com/predicting-stock-price-with-lstm-13af86a74944
-        
-        
-        ''', className='eleven columns', style={'paddingLeft': '5%'})], className="row")
+        [Prabhakaran, S. (2020, September 17). ARIMA Model - Complete Guide to Time Series Forecasting in Python.]
+        (https://www.machinelearningplus.com/time-series/arima-model-time-series-forecasting-python/)
+
+        [Loukas, S. (2020, July 31). LSTM Time-Series Forecasting: Predicting Stock Prices Using An LSTM Model.] 
+        (https://towardsdatascience.com/lstm-time-series-forecasting-predicting-stock-prices-using-an-lstm-model-6223e9644a2f)
+
+        [Nayak, A. (2020, June 10). Predicting Stock Price with LSTM.]
+        (https://towardsdatascience.com/predicting-stock-price-with-lstm-13af86a74944)
+    
+        ''', className='eleven columns', style={'paddingLeft': '5%', 'marginTop':'1.5rem'})], className="row")
 
 # Interactive portfolio tool 
-def portfolio_visualizer_tool():
+def interactive_portfolio_tool():
     """
     Returns the interactive portfolio manager as a dash `html.Div`. The view
-    is a 12-column graph showing the performance of our portfolio relative to the 
-    S&P 500, DJI, and NASDAQ Composite. Below are dropdown menus to choose stock and input boxes
-    to choose number of shares. `Add new stock` button available to add another stock.
+    is a 8:3 division between a graph showing portfolio performance and input boxes 
+    to allocate shares to stocks. 
     """
     return html.Div(children=[
-        html.Div(children=[dcc.Graph(id='interactive-portfolio')], className='twelve columns'),
+        html.Div(children=[dcc.Graph(id='interactive-portfolio')], className='nine columns'),
         html.Div(children=[
-            html.H4(
-                "Select Stocks & Number of Shares")],
-                style={'marginTop':'2rem', 
-                'display':'table-cell'}),
-        html.Div(children=[
-            html.Button(
-                children='Add new stock',
-                id='add stock',
-                type='button',
-                n_clicks=0
-            )
-        ], style = {'width':'25%', 'display':'table-cell'}), 
-        html.Div(children=[
-            dcc.Dropdown(
-                id='stock-selector',
-                options=[
-                    {'label': 'Apple (AAPL)', 'value':'AAPL'},
-                    {'label': 'Starbucks (SBUX)', 'value':'SBUX'}
-                ],
-                placeholder='Choose a stock')], style={'width':'30%', 'display':'inline-grid'}),
-        html.Div(children=[
-            dcc.Input(
-                id='quantity',
-                type='number',
-                min=1, max=1000, step=1,
-                placeholder='Shares'
-            )
-        ], style={'width':'15%', 'display':'inline-grid'})
-        ], className='row eleven columns')
+            html.H5("Stocks & Number of Shares", style={'marginTop':'0.5rem', 'fontSize':18}), 
+            # big div containing 10 subdivs which provide 
+            # stock name (ticker) + input box for shares
+            html.Div(children=[
+                # subdiv 1: Tesla + input box
+                html.Div(children=[
+                    html.H6("Tesla (TSLA)", style={'fontSize':14, 'marginTop':'0.5rem', 'display':'table-cell'}), 
+                    dcc.Input(
+                        id='tsla',
+                        type='number',
+                        min=1, max=1000, step=1,
+                        placeholder='Shares',
+                        style={'display':'table-cell'}
+                    )
+                ], style={'width':'100%', 'marginTop':'1rem', 'display':'inline-table', 'verticalAlign':'middle'}),
+                # subdiv 2: Enphase Energy + input box
+                html.Div(children=[
+                    html.H6("Enphase (ENPH)", style={'fontSize':14, 'marginTop':'0.5rem', 'display':'table-cell'}),
+                    dcc.Input(
+                        id='enph',
+                        type='number', 
+                        min=1, max=1000, step=1,
+                        placeholder='Shares',
+                        style={'display':'table-cell'}
+                    )
+                ], style={'width':'100%','display':'inline-table', 'verticalAlign':'middle', 'marginTop':'0.5rem'}),
+                # subdiv 3: Zoom + input box
+                html.Div(children=[
+                    html.H6("Zoom (ZM)", style={'fontSize':14, 'marginTop':'0.5rem', 'display':'table-cell'}),
+                    dcc.Input(
+                        id='zm',
+                        type='number',
+                        min=1, max=1000, step=1,
+                        placeholder='Shares',
+                        style={'display':'table-cell'}
+                    )
+                ], style={'width':'100%','display':'inline-table', 'verticalAlign':'middle', 'marginTop':'0.5rem'}),
+                # subdiv 4: Moderna + input box
+                html.Div(children=[
+                    html.H6("Moderna (MRNA)", style={'fontSize':14, 'marginTop':'0.5rem', 'display':'table-cell'}),
+                    dcc.Input(
+                        id='mrna',
+                        type='number',
+                        min=1, max=1000, step=1,
+                        placeholder='Shares',
+                        style={'display':'table-cell'}
+                    )
+                ], style={'width':'100%','display':'inline-table', 'verticalAlign':'middle', 'marginTop':'0.5rem'}),
+                # subdiv 5: Peloton + input box
+                html.Div(children=[
+                    html.H6("Peloton (PTON)", style={'fontSize':14, 'marginTop':'0.5rem', 'display':'table-cell'}),
+                    dcc.Input(
+                        id='pton', 
+                        type='number', 
+                        min=1, max=1000, step=1,
+                        placeholder='Shares',
+                        style={'display':'table-cell'}
+                    )
+                ], style={'width':'100%','display':'inline-table', 'verticalAlign':'middle', 'marginTop':'0.5rem'}),
+                # subdiv 6: Bit Digital + input box
+                html.Div(children=[
+                    html.H6("Bit Digital (BTBT)", style={'fontSize':14, 'marginTop':'0.5rem', 'display':'table-cell'}),
+                    dcc.Input(
+                        id='btbt',
+                        type='number', 
+                        min=1, max=1000, step=1,
+                        placeholder='Shares',
+                        style={'display':'table-cell'}
+                    )
+                ], style={'width':'100%','display':'inline-table', 'verticalAlign':'middle', 'marginTop':'0.5rem'}),
+                # subdiv 7: Target + input box
+                html.Div(children=[
+                    html.H6("Target (TGT)", style={'fontSize':14, 'marginTop':'0.5rem', 'display':'table-cell'}),
+                    dcc.Input(
+                        id='tgt', 
+                        type='number',
+                        min=1, max=1000, step=1,
+                        placeholder='Shares',
+                        style={'display':'table-cell'}
+                    )
+                ], style={'width':'100%','display':'inline-table', 'verticalAlign':'middle', 'marginTop':'0.5rem'}),
+                # subdiv 8: Walmart + input box
+                html.Div(children=[
+                    html.H6("Walmart (WMT)", style={'fontSize':14, 'marginTop':'0.5rem', 'display':'table-cell'}),
+                    dcc.Input(
+                        id ='wmt', 
+                        type='number', 
+                        min=1, max=1000, step=1,
+                        placeholder='Shares',
+                        style={'display':'table-cell'}
+                    )
+                ], style={'width':'100%','display':'inline-table', 'verticalAlign':'middle', 'marginTop':'0.5rem'}),
+                # subdiv 9: Starbucks + input box
+                html.Div(children=[
+                    html.H6("Starbucks (SBUX)", style={'fontSize':14, 'marginTop':'0.5rem', 'display':'table-cell'}),
+                    dcc.Input(
+                        id='sbux',
+                        type='number', 
+                        min=1, max=1000, step=1,
+                        placeholder='Shares',
+                        style={'display':'table-cell'}
+                    )
+                ], style={'width':'100%','display':'inline-table', 'verticalAlign':'middle', 'marginTop':'0.5rem'}),
+                # subdiv 10: Abbvie + input box
+                html.Div(children=[
+                    html.H6("Abbvie (ABBV)", style={'fontSize':14, 'marginTop':'0.5rem', 'display':'table-cell'}),
+                    dcc.Input(
+                        id='abbv',
+                        type='number', 
+                        min=1, max=1000, step=1,
+                        placeholder='Shares',
+                        style={'display':'table-cell'}
+                    )
+                ], style={'width':'100%','display':'inline-table', 'verticalAlign':'middle', 'marginTop':'0.5rem'})
+            ])
+        ], className='three columns', style={'marginLeft': 5, 'marginTop':'2.5%'})
+    ], className='row twelve columns', style={'marginBottom':'10%'})
 
 # Sequentially add page components to the app's layout
 def dynamic_layout():
@@ -189,13 +288,34 @@ def dynamic_layout():
         team(),
         dcc.Graph(id='trend-graph', figure=static_stacked_trend_graph(stack=False)),
         interactive_portfolio_description(),
-        portfolio_visualizer_tool(),
+        interactive_portfolio_tool(),
         nextsteps(),
         refs(),
     ], className='row', id='content')
 
 # Set layout to a function which updates upon reloading 
 app.layout = dynamic_layout()
+
+# Defines dependencies of interactive components
+
+@app.callback(
+    Output(component_id='interactive-portfolio', component_property='figure'),
+    [Input('tsla', 'value'),
+    Input('enph', 'value'),
+    Input('zm', 'value'), 
+    Input('mrna', 'value'), 
+    Input('pton', 'value'),
+    Input('btbt', 'value'), 
+    Input('tgt', 'value'), 
+    Input('wmt', 'value'), 
+    Input('sbux', 'value'),
+    Input('abbv', 'value')]
+)
+def interactive_portfolio_handler(tsla, enph, zm, mrna, pton, btbt, tgt, wmt, sbux, abbv):
+    """Changes the display graph of our interactive portfolio"""
+    
+    fig = go.Figure()
+    return fig
 
 # Run the application
 if __name__ == '__main__':
