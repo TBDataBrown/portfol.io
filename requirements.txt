@@ -58,8 +58,8 @@ matplotlib
 mccabe==0.6.1
 mistune 
 mkl-fft
-mkl-random==1.1.1
-mkl-service==2.3.0
+mkl-random
+mkl-service
 more-itertools 
 multitasking==0.0.9
 mypy-extensions==0.4.3
