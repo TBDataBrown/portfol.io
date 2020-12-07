@@ -128,4 +128,4 @@ webencodings==0.5.1
 Werkzeug==1.0.1
 yfinance==0.1.54
 zipp @ file:///tmp/build/80754af9/zipp_1604001098328/work
-web: gunicorn app:server
+gunicorn
