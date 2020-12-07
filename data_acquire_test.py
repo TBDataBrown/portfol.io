@@ -40,7 +40,9 @@ def download_one(t, p, i):
             auto_adjust = True,
             prepost = False,
             threads = True,
-            proxy = None)
+            proxy = None,
+            # no progress bar
+            progress=False)
     data.reset_index(inplace=True,drop=False)
     data.rename(columns = {'Close':t}, inplace = True) 
     data = data.drop(['Open', 'High','Low','Volume'], axis=1)
@@ -49,11 +51,10 @@ def download_one(t, p, i):
 
 # Download data for a portfolio
 def make_portfolio(port, p ,i):
-    one = [download_one(port[0],p,i)]
-    rst = []
+    rst = download_one(port[0],p,i)
     for t in port[1:]:
-        one.append(download_one(t,p,i).drop(['Datetime'], axis=1))
-        rst = pd.concat(one, axis=1, sort=False)
+        one = download_one(t,p,i)
+        rst = pd.merge(rst, one, on = 'Datetime', how = 'outer', sort = True)
     return rst
 
 
