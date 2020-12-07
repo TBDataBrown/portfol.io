@@ -17,6 +17,7 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css', '/assets/s
 
 # Define dash app
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets,title='Portfol.io')
+server = app.server
 
 ### Define component functions
 
