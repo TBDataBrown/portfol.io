@@ -35,7 +35,7 @@ def upsert_stock(df):
     Update MongoDB database `stock` and collection `stock` with the given `DataFrame`.
     """
     db = client.get_database("stock")
-    collection = db.get_collection("stock2")
+    collection = db.get_collection("stock3")
     update_count = 0
     for record in df.to_dict('records'):
         result = collection.replace_one(
@@ -50,7 +50,11 @@ def upsert_stock(df):
 
 def fetch_all_stock():
     db = client.get_database("stock")
-    collection = db.get_collection("stock2")
+    
+    # drop for now
+    db.stock3.drop()
+    
+    collection = db.get_collection("stock3")
     ret = list(collection.find())
     logger.info(str(len(ret)) + ' documents read from the db')
     return ret
