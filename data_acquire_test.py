@@ -17,7 +17,7 @@ import numpy as np
 
 
 # parameter for testing
-portfolio = ['TSLA', 'ENPH', 'ZM', 'MRNA', 'PTON', 'BTBT', 'TGT', 'WMT', 'SBUX', 'ABBV', 'NDAQ', 'SPY', '^DJI']
+portfolio = ['TSLA', 'AMD', 'ZM', 'MRNA', 'PTON', 'AAPL', 'TGT', 'WMT', 'SBUX', 'ABBV', 'NIO', 'SPY', '^DJI']
 p = '5d'
 i = '1m'
 
