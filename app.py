@@ -55,8 +55,8 @@ def summary():
         investors to curate, visualize, and analyze their investments in an intuitive manner.
         Functionalities include:
         - Automatically updated real-time visualizations of stock prices and related data
-        - Forecasting of stock prices with an LSTM model
         - Retrieve and visualize historical market data, up to 1 minute in granularity
+        - Devise a personalized portfolio and compare performance to market indices
         ''', className='eleven columns', style={'paddingLeft': '5%'})], className="row")
 
 def team():
@@ -71,6 +71,16 @@ def team():
         - Adrian Lam
         
         ''', className='eleven columns', style={'paddingLeft': '5%', 'marginTop':'1.5rem'})], className="row")
+
+def static_graph_description():
+    """Description for static visualization"""
+    return html.Div(children=[
+        dcc.Markdown('''
+        # Real Time Stock Prices
+        Interactive stock chart displaying real-time stock prices for ten high-performing stocks. 
+        Hover over a particular line to track that stock’s price at any instant of time! 
+        Chart is continuously updated on trading days as data comes in.
+        ''', className='eleven columns', style={'paddingLeft': '5%', 'marginTop':'1.5rem'})], className='row')
 
 
 def static_stacked_trend_graph(stack=False):
@@ -94,6 +104,7 @@ def static_stacked_trend_graph(stack=False):
     fig.update_xaxes(
     rangebreaks=[
         dict(bounds=[21, 14.5], pattern="hour"),
+        dict(bounds=["sat", "mon"]) # hide weekends
     ])
 
     fig.update_layout(template='ggplot2',
@@ -113,11 +124,35 @@ def interactive_portfolio_description():
         dcc.Markdown('''
         # Interactive Portfolio
         We curated a list of 10 top stocks from Investopedia advisors, considering factors including
-        value, growth, and dividends in the month of December 2020. These stocks come from technology,
-        energy, consumer products, and healthcare sectors. With Portfol.io, you can choose from the 10 stocks
+        value, growth, and dividends in the month of December 2020. These stocks come from a variety of industries, 
+        including the technology, energy, consumer products, and healthcare sectors. With Portfol.io, you can choose from the 10 stocks
         and specify the number of shares of each stock. Our visualizer will show your portfolio's performance over the 
-        last 7 days and compare it with the performance of major indexes, including the Dow Jones Industrial, Nasdaq Composite,
+        last 7 days and compare it with the performance of major indices, including the Dow Jones Industrial
         and S&P 500.
+        ''', className='eleven columns', style={'paddingLeft':'5%', 'marginTop':'1.5rem'})
+    ], className='row')
+
+def project_details():
+    """
+    Returns descriptions about details of the project
+    """
+    return html.Div(children=[
+        dcc.Markdown('''
+        # Project Details
+        The final product drew from various resources and made use of a wide range of available technology, 
+        ranging from yfinance and MongoDB to plotly and Dash. First off, our data is accessed through the **yfinance API**, 
+        which allows for mass access to real-time stock market data from Yahoo! finance. Upon extraction, our data is stored in a **MongoDB** database in raw form.
+        A built-in function ensures updates are pulled through as new data comes in throughout the trading day. The dashboard itself is a **Dash app**, and the interactive visualizations were created in conjunction with *plotly*. 
+        Finally, our Dash app is hosted on **Heroku**.
+
+        You can view our ETL procedure and prototypes for our visualizations below:
+
+        [ETL_EDA]
+        (https://github.com/TBDataBrown/portfol.io/blob/main/EDA_ETL.ipynb)
+
+        [Visualization prototype]
+        (https://github.com/TBDataBrown/portfol.io/blob/main/Enhancement.ipynb)
+
         ''', className='eleven columns', style={'paddingLeft':'5%', 'marginTop':'1.5rem'})
     ], className='row')
 
@@ -128,11 +163,10 @@ def nextsteps():
     return html.Div(children=[dcc.Markdown('''
         # Next Steps
         In future iterations of Portfol.io, we plan on releasing new features that allow users to 
-        add their stocks of choice to their portfolio, rather than be limited to a fixed set of stocks. 
+        add their stocks of choice to their portfolio, rather than a fixed list of stocks. 
         Additionally, users will be able to visualize their porfolio's short-term and long-term performance trends
-        by allowing users to change the interval of their portfolio. These new features would allow individual investors to make more informed investment
-        decisions. 
-        ''', className='eleven columns', style={'paddingLeft': '5%'})], className="row")
+        by allowing users to change the interval of their portfolio.
+        ''', className='eleven columns', style={'paddingLeft': '5%', 'marginTop':'1.5rem'})], className="row")
 
 def refs():
     """
@@ -140,15 +174,18 @@ def refs():
     """
     return html.Div(children=[dcc.Markdown('''
         # Related Work
-        [Prabhakaran, S. (2020, September 17). ARIMA Model - Complete Guide to Time Series Forecasting in Python.]
-        (https://www.machinelearningplus.com/time-series/arima-model-time-series-forecasting-python/)
+        [yfinance API by Ran Aroussi]
+        (https://github.com/ranaroussi/yfinance)
 
-        [Loukas, S. (2020, July 31). LSTM Time-Series Forecasting: Predicting Stock Prices Using An LSTM Model.] 
-        (https://towardsdatascience.com/lstm-time-series-forecasting-predicting-stock-prices-using-an-lstm-model-6223e9644a2f)
+        [Aroussi, R. (2019, April 17). Guide to yfinance API by its creator]
+        (https://aroussi.com/post/python-yahoo-finance)
 
-        [Nayak, A. (2020, June 10). Predicting Stock Price with LSTM.]
-        (https://towardsdatascience.com/predicting-stock-price-with-lstm-13af86a74944)
-    
+        [Bland, G. (2020, November 03). Yahoo Finance API - A Complete Guide]
+        (https://algotrading101.com/learn/yahoo-finance-api-guide/)
+
+        [Boller, K. (2018, April 16). Python for Finance: Stock Portfolio Analyses]
+        (https://towardsdatascience.com/python-for-finance-stock-portfolio-analyses-6da4c3e61054)
+
         ''', className='eleven columns', style={'paddingLeft': '5%', 'marginTop':'1.5rem'})], className="row")
 
 # Interactive portfolio tool 
@@ -308,9 +345,11 @@ def dynamic_layout():
         html.Hr(),
         summary(),
         team(),
+        static_graph_description(),
         dcc.Graph(id='trend-graph', figure=static_stacked_trend_graph(stack=False)),
         interactive_portfolio_description(),
         interactive_portfolio_tool(),
+        project_details(),
         nextsteps(),
         refs(),
     ], className='row', id='content')
@@ -351,10 +390,10 @@ def interactive_portfolio_handler(tsla, amd, zm, mrna, pton, aapl, tgt, wmt, sbu
     title = "Portfolio Performance vs. S&P500 & Dow Jones Industrial"
     # SPY line
     fig.add_trace(go.Scatter(x=x, y=SPY, mode='lines', name='S&P 500', 
-    line=dict(color='red', width=3)))
+    line=dict(color='red', width=2)))
     # DJI line
     fig.add_trace(go.Scatter(x=x, y=DJI, mode='lines', name='Dow Jones Industrial',
-    line=dict(color='blue', width=3)))
+    line=dict(color='blue', width=2)))
 
     ptf = df['TSLA']*tsla + df['AMD']*amd + df['ZM']*zm + df['MRNA']*mrna + df['PTON']*pton + \
         df['AAPL']*aapl + df['TGT']*tgt + df['WMT']*wmt + df['SBUX']*sbux + df['ABBV']*abbv + \
@@ -366,7 +405,7 @@ def interactive_portfolio_handler(tsla, amd, zm, mrna, pton, aapl, tgt, wmt, sbu
 
     # Portfolio line
     fig.add_trace(go.Scatter(x=x, y=ptf, mode='lines', name='Portfolio',
-    line=dict(color='green', width=3)))
+    line=dict(color='green', width=2)))
 
     fig.update_layout(template='ggplot2', title=title, yaxis_title='Net Gain (USD)',
     xaxis_title='Date/Time for Trading Hours')
@@ -374,6 +413,7 @@ def interactive_portfolio_handler(tsla, amd, zm, mrna, pton, aapl, tgt, wmt, sbu
     fig.update_xaxes(
     rangebreaks=[
         dict(bounds=[21, 14.5], pattern="hour"),
+        dict(bounds=["sat", "mon"])
     ])
 
     return fig
