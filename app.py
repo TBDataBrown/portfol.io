@@ -78,9 +78,9 @@ def static_graph_description():
     return html.Div(children=[
         dcc.Markdown('''
         # Real Time Stock Prices
-        Interactive stock chart displaying real-time stock prices for ten high-performing stocks. 
+        Here's an interactive stock chart displaying real-time stock prices for ten high-performing stocks. 
         Hover over a particular line to track that stock’s price at any instant of time! 
-        Chart is continuously updated on trading days as data comes in.
+        The chart is continuously updated on trading days as data comes in.
         ''', className='eleven columns', style={'paddingLeft': '5%', 'marginTop':'1.5rem'})], className='row')
 
 
@@ -139,12 +139,21 @@ def project_details():
     """
     return html.Div(children=[
         dcc.Markdown('''
-        # Project Details
+        # Project Details: Technology Stack
         The final product drew from various resources and made use of a wide range of available technology, 
         ranging from yfinance and MongoDB to plotly and Dash. First off, our data is accessed through the **yfinance API**, 
         which allows for mass access to real-time stock market data from Yahoo! finance. Upon extraction, our data is stored in a **MongoDB** database in raw form.
-        A built-in function ensures updates are pulled through as new data comes in throughout the trading day. The dashboard itself is a **Dash app**, and the interactive visualizations were created in conjunction with *plotly*. 
+        A built-in function ensures updates are pulled through as new data comes in throughout the trading day. The dashboard itself is a **Dash app**, and the interactive visualizations were created in conjunction with **plotly**. 
         Finally, our Dash app is hosted on **Heroku**.
+
+        # Data acquisition, ETL, and Database design
+        When extracting data from yfinance, we set the interval to ‘1m’ to acquire minute level data for each stock in our portfolio, and drop all columns other than ‘Datetime’ and the close since only the adjusted close will be used.
+         
+        Next, to create a DataFrame for the portfolio, we outer merge individual stocks sorted by ‘Datetime’ in order to preserve all data. Doing so leaves us with some missing values because yfinance does not always provide complete data for each stock.
+
+        Our data_acquire_test.py file has a main loop for continuously updating the collection, which is to upsert the dataframe generated from previous steps. We can set up different download_period to decide the update rate of the collection. For our app, we update every 10 seconds. Whether the update succeeds or returns error messages, it would be recorded in a log file ‘data.log’. The function of setting up a logger lies in ‘utils.py’.
+
+        Finally, we use a new M0 cluster on MongoDB to store the data, with AWS as our cloud provider. We set the connection IP address to all zeros so there’s no limit on users. Connecting to the cluster requires the PyMongo Driver as well as a few dependencies like snappy, gssapi, srv and tls. With that, we can modify the connection string driven by Python 3.6 or later and apply it for cluster connection.
 
         You can view our ETL procedure and prototypes for our visualizations below:
 
