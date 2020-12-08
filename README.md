@@ -7,7 +7,6 @@
 
 
 
-
 ## Data_acquire
 
 The data is from open source library yfinance (Yahoo Finance). For each stock in the portfolio we choose, we set interval to be ‘1m’ to acquire minute level data and drop all columns other than ‘Datetime’ and the close since only the adjusted close will be used. 
@@ -23,3 +22,6 @@ We create a new M0 cluster on MongoDB to store the data choosing AWS as our clou
 ## LSTM
 
 Long short-term memory is an artificial recurrent neural network which performs well on time series data. Our idea is to train a LSTM model for either an individual stock or the whole portfolio in real time. Again we are only using close price and datetime. For preprocessing, we will split the data by the ratio of the classic 8:2 and apply MinMaxScaler on the training set. We use 4 hidden layers with 50 neurons running though 100 epochs. We will make predictions using the model just trained. The problem we face now is that the missing value in the portfolio will fail on the scaling and later steps while it’s also hard to impute the stock price. And even so, each epoch would take around 4 secs and the whole process would take about 7 minutes for one stock, which is rather slow compared with the 10 secs update frequency. 
+
+## Screencast
+https://youtu.be/SMo3xWHTrnE
